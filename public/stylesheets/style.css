@@ -6,3 +6,32 @@ body {
 a {
   color: #00B7FF;
 }
+
+table {
+  width: 100%;
+}
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+.bg-yellow {
+  background-color: #ffeb3b;
+}
+.bg-red {
+  background-color: #f44336;
+  color: white;
+}
+.bg-white {
+  background-color: #ffffff;
+}
+.btn-complete {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.btn-complete:hover {
+  background-color: #218838;
+}

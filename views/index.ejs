@@ -1,35 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="../public/stylesheets/style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f3f4f6, #e0e0e0); /* グラデーション背景 */
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin-top: 30px;
+    }
+    .card {
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+    }
+    .table {
+      margin-top: 20px;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+    thead{
+      background-color: #000000;
+      color: #ffffff;
+    }
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border: 1px solid #dee2e6;
+    }
+    .bg-yellow {
+      color: #fbe204;
+    }
+    .bg-red {
+      color: #f44336;
+    }
+     tr:nth-child(even) td {
+      background-color: #ffffff; /* 偶数行の背景色 */
+    }
+    tr:nth-child(odd) td {
+      background-color: #ffffff; /* 奇数行の背景色 */
+    } 
+    .btn-complete {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    
+    .btn-complete:hover {
+      background-color: #218838;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <%- include('./error_messages'); %>
   <%- include('./header'); %>
-  <% if(isAuth) { %>
-    <div class="container">
+  <div class="container mt-4">
+    <%- include('./error_messages'); %>
+    <% if (isAuth) { %>
       <div class="row">
         <div class="col-md-6">
-          <form action="/" method="post">
-            <label>タスクの追加</label>
-            <input required type="text" name="add" placeholder="何をする?"/>
-            <input type="submit" value="追加"/>
+          <h2>タスクの追加</h2>
+          <form action="/" method="post" class="mb-4">
+            <div class="form-group">
+              <label for="add">タスク</label>
+              <input required type="text" name="add" id="add" class="form-control" placeholder="何をする?" />
+            </div>
+            <div class="form-group">
+              <label for="deadline">締め切り</label>
+              <input type="date" name="deadline" id="deadline" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">追加</button>
           </form>
         </div>
         <div class="col-md-6">
-          <ul>
-            <% for(let todo of todos){ %>
-              <li><span><%= todo.content %></span></li>
-            <% } %>
-          </ul>
+          <h2>タスクリスト</h2>
+          <table id="todo-table" class="table table-striped">
+            <thead>
+              <tr>
+                <th>タスク</th>
+                <th>締め切りまでの日数</th>
+                <th>アクション</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let todo of todos) { %>
+                <tr class="<% if (todo.daysLeft === 0) { %>bg-red<% } else if (todo.daysLeft <= 7) { %>bg-yellow<% } %>">
+                  <td><%= todo.content %></td>
+                  <td>
+                    <% if (todo.daysLeft !== null) { %>
+                      <%= todo.daysLeft %> 日
+                    <% } else { %>
+                      なし
+                    <% } %>
+                  </td>
+                  <td>
+                    <form action="/complete/<%= todo.id %>" method="post" style="display:inline;">
+                      <button type="submit" class="btn btn-complete">完了</button>
+                    </form>
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-  <% } else { %>
-    <h1>Welcome to the TodoApp</h1>
-    <a class="btn btn-primary" href="/signup" role="button">Sign up now!</a>
-  <% } %>
+    <% } else { %>
+      <div class="text-center mt-5">
+        <h1>TodoAppへようこそ</h1>
+        <a class="btn btn-primary mt-3" href="/signup" role="button">今すぐサインアップ！</a>
+      </div>
+    <% } %>
+  </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
           integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
           crossorigin="anonymous"></script>
@@ -39,5 +135,5 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
           integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
           crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>
